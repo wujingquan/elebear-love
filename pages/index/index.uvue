@@ -1,44 +1,207 @@
 <template>
-	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-		</view>
-	</view>
+  <view class="content">
+    <swiper class="swiper">
+      <swiper-item v-for="item in bannerList" item-id="A">
+        <view class="swiper-item">
+          <img :src="item" alt="" />
+        </view>
+      </swiper-item>
+    </swiper>
+    <view class="inav">
+      <a v-for="item in navList" :href="item.url">
+        <img :src="item.img" />
+        <text>{{ item.title }}</text>
+      </a>
+    </view>
+
+    <scroll-view
+      class="scroll-view"
+      direction="horizontal"
+      @scroll="scroll"
+      :scroll-left="120"
+      :show-scrollbar="showScrollbar"
+    >
+      <view v-for="item in scrollList" class="scroll-view-item">
+        <view class="wrapper">
+          <view class="box">
+            <view class="bg"></view>
+            <img :src="item.img" />
+            <view class="detail">{{ item.detail }}</view>
+            <view class="j"><text>{{ item.jd }}</text></view>
+          </view>
+          <view class="title">{{ item.title }}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				title: 'Hello'
-			}
-		},
-		onLoad() {
-
-		},
-		methods: {
-
-		}
-	}
+  export default {
+    data() {
+      return {
+        baseApi: "http://127.0.0.1:4523/m1/4569696-0-default",
+        bannerList: [],
+        navList: [],
+				scrollList: []
+      };
+    },
+    onLoad() {
+      uni.request({
+        url: this.baseApi + "/banner",
+        method: "GET",
+        success: (res) => {
+          this.bannerList = res.data;
+        },
+      });
+      uni.request({
+        url: this.baseApi + "/nav",
+        method: "GET",
+        success: (res) => {
+          this.navList = res.data;
+        },
+      });
+			uni.request({
+        url: this.baseApi + "/scroll",
+        method: "GET",
+        success: (res) => {
+          this.scrollList = res.data;
+        },
+      });
+    },
+    methods: {},
+  };
 </script>
 
-<style>
-	.content {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-bottom: 50rpx;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
-	}
+<style lang="scss">
+  .swiper {
+    padding: 14px;
+    .swiper-item {
+      border-radius: 10px;
+    }
+  }
+  .inav {
+    width: 94%;
+    margin: 0 auto;
+    clear: both;
+    overflow: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    position: relative;
+    a {
+      width: 20%;
+      display: inline-block;
+      text-align: center;
+      box-sizing: border-box;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      img {
+        width: 42px;
+        height: 42px;
+        display: inline-block;
+      }
+      text {
+        display: inline-block;
+        font-size: 14px;
+        margin: 0.2rem auto 1.5rem auto;
+        color: #000;
+      }
+    }
+  }
+  .scroll-view {
+    width: 100%;
+    flex-direction: row;
+  }
+  .scroll-view-item {
+    width: 200px;
+    /* height: 300px; */
+    justify-content: center;
+    align-items: center;
+    background-color: red;
+    position: relative;
+    margin: 0 10px;
+    padding-top: 40px;
+    .wrapper {
+      width: 130px;
+      height: 300px;
+      background: yellow;
+      display: block;
+      border-radius: 12px;
+      position: relative;
+      overflow: visible;
+      .box {
+        position: absolute;
+        width: 96px;
+        height: 96px;
+        left: 50%;
+        transform: translateX(-50%);
+        top: -32px;
+        box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        background-color: #fff;
+        .bg {
+          width: 84%;
+          height: 84%;
+          margin: 8%;
+          border-radius: 12px;
+          background-color: #ffcac3;
+        }
+        img {
+          width: 84px;
+          height: 84px;
+          object-fit: cover;
+          -webkit-object-fit: cover;
+          position: absolute;
+          left: 0.5rem;
+          bottom: 0.5rem;
+        }
+        .detail {
+          position: absolute;
+          left: 12px;
+          top: 110px;
+          width: 34px;
+          /* line-height: 2.4rem;
+					border-radius: 2rem; */
+          font-size: 12px;
+          margin-top: -2.5rem;
+          background-color: #fff;
+          display: none;
+        }
+        .j {
+          line-height: 20px;
+          height: 20px;
+          width: 34px;
+          position: absolute;
+          left: 0;
+          top: 0;
+          border-radius: 12px 0 8px 0;
+          color: #fff;
+          font-size: 12px;
+          background: -webkit-linear-gradient(
+            315deg,
+            rgba(255, 111, 111, 0.5) 0%,
+            rgba(255, 111, 111, 0.8) 100%
+          );
+          background-color: #fff;
+          text-align: center;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          text {
+            display: inline-block;
+            /* transform: scale(.9); */
+            font-size: 12px;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
 </style>
